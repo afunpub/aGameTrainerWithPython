@@ -1,5 +1,5 @@
 # aGameTrainerWithPython
-####### This is a online course.
+###### This is a online course.
 ## We need Win APIs.
 1. OpenProcess function
 2. Process Security and Access Rights
