@@ -1,4 +1,5 @@
-import ctypes, psutil
+import ctypes
+import psutil
 
 # DLLs needed
 kernel32 = ctypes.windll.kernel32
@@ -11,6 +12,9 @@ PROCESS_VM_WRITE = (0x0020)
 OpenProcess = kernel32.OpenProcess
 CloseHandle = kernel32.CloseHandle
 GetLastError = kernel32.GetLastError
+ReadProcessMemory = kernel32.ReadProcessMemory
+WriteProcessMemory = kernel32.WriteProcessMemory
+
 
 class ReadWriteMemory:
 
@@ -33,9 +37,57 @@ class ReadWriteMemory:
             elif Process.name == None:
                 hProcess = None
 
-    def CloseHandle(self,hProcess):
+    def CloseHandle(self, hProcess):
         CloseHandle(hObject)
 
     def GetLastError(self):
         GetLastError()
         return GetLastError()
+
+    def PointerOffer(self, lpBaseAddress):
+        pass
+
+    def ReadProcessMemory(self, hProcess, lpBaseAddress):
+        try:
+            lpBaseAddress = lpBaseAddress
+            ReadBuffer = ctypes.c_uint()
+            lpBuffer = ctypes.byref(ReadBuffer)
+            nSize = ctypes.sizeof(ReadBuffer)
+            lpNumberOfBytesRead = ctypes.c_ulong(0)
+
+            ReadProcessMemory(
+                hProcess,
+                lpBaseAddress,
+                lpBuffer,
+                nSize,
+                lpNumberOfBytesRead
+            )
+            return ReadBuffer.value
+        except (BufferError, ValueError, TypeError):
+            CloseHandle(hProcess)
+            e = 'Handle Closed, Error', hProcess, GetLastError()
+            return e
+
+    def WriteProcessMemory(self, hProcess, lpBaseAddress, Value):
+        try:
+            lpBaseAddress = lpBaseAddress
+            Value = Value
+            WriteBuffer = ctypes.c_uint(Value)
+            lpBuffer = ctypes.byref(WriteBuffer)
+            nSize = ctypes.sizeof(WriteBuffer)
+            lpNumberOfBytesRead = ctypes.c_ulong(0)
+
+            WriteProcessMemory(
+                hProcess,
+                lpBaseAddress,
+                lpBuffer,
+                nSize,
+                lpNumberOfBytesRead
+            )
+        except (BufferError, ValueError, TypeError):
+            CloseHandle(hProcess)
+            e = 'Handle Closed, Error', hProcess, GetLastError()
+            return e
+
+
+rwm = ReadWriteMemory()
