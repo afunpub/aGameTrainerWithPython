@@ -18,5 +18,7 @@ def main():
     hFilter = 355
     w = wFilter-8
     h = hFilter-47
-    sw=root.winfo_screenwidth()
-    sh=root.winfo_screenheight()
+    sw = root.winfo_screenwidth()
+    sh = root.winfo_screenheight()
+    x = (sw-w)/2
+    y = (sh-h)/2
